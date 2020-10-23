@@ -16,38 +16,52 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 
-
+@RestController
 public class ProductController {
 
     @Autowired
     private ProductDao productDao;
 
+    private static List<Product> products = new ArrayList<Product>(){{
+        add(new Product(1, "Ordinateur Portable", 350, 230));
+        add(new Product(2, "Aspirateur Robot", 500, 300));
+        add(new Product(3, "Table de Ping Pong", 750, 350));
+    }};
 
     //Récupérer la liste des produits
     @RequestMapping(value = "/Produits", method = RequestMethod.GET)
-    public MappingJacksonValue listeProduits() {
+    public List<Product> listeProduits(){
+        return products;
+    }
+    /*public MappingJacksonValue listeProduits() {
         Iterable<Product> produits = productDao.findAll();
         SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("prixAchat");
         FilterProvider listDeNosFiltres = new SimpleFilterProvider().addFilter("monFiltreDynamique", monFiltre);
         MappingJacksonValue produitsFiltres = new MappingJacksonValue(produits);
         produitsFiltres.setFilters(listDeNosFiltres);
         return produitsFiltres;
-    }
+    }*/
 
 
     //Récupérer un produit par son Id
-    public Product afficherUnProduit() {
-        return null;
+    @RequestMapping(value = "/Produits/{id}", method = RequestMethod.GET)
+    public Product afficherUnProduit(@PathVariable int id) {
+        Product produit = new Product();
+        for (Product product : products){
+            if (product.getId() == id){
+                produit = product;
+            }
+        }
+        return produit;
     }
 
-
-
-
     //ajouter un produit
-    @PostMapping(value = "/Produits")
+
+    /*@PostMapping(value = "/Produits")
     public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
 
         Product productAdded =  productDao.save(product);
@@ -62,16 +76,26 @@ public class ProductController {
                 .toUri();
 
         return ResponseEntity.created(location).build();
-    }
+    }*/
 
-    // supprimer un produit
-    public void supprimerProduit() {
+    // supprimer un produits
+    @DeleteMapping(value = "/deleteProduits/{id}")
+    public void supprimerProduit(@PathVariable int id) {
+        products.removeIf(product -> product.getId() == id);
     }
 
     // Mettre à jour un produit
-    public void updateProduit(@RequestBody Product product) {
+    @PutMapping(value = "/updateProduit/{id}")
+    public void updateProduit(@PathVariable int id, @RequestBody Product product) {
+        for (Product produit : products){
+            if (produit.getId() == id){
+                produit.setId(product.getId());
+                produit.setNom(product.getNom());
+                produit.setPrix(product.getPrix());
+                produit.setPrixAchat(product.getPrixAchat());
+            }
+        }
     }
-
 
     //Pour les tests
     @GetMapping(value = "test/produits/{prix}")

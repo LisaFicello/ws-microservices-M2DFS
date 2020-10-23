@@ -9,25 +9,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class ProductMargeDelegate {
+public class ProductDeleteDelegate {
     @Autowired
     RestTemplate restTemplate;
 
-    @HystrixCommand(fallbackMethod = "getMargeProducts_Fallback")
-    public String getMargeProducts(){
+    @HystrixCommand(fallbackMethod = "deleteProduct_Fallback")
+    public String deleteProduct(Integer id){
         //se mettre au début de la ligne puis cms+option+V choisir ce qu'on veut
-        String response = restTemplate.exchange("http://localhost:9090/AdminProduits",
+        String response = restTemplate.exchange("http://localhost:9090/deleteProduits/{id}",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<String>() {
-                }).getBody();
+                }, id).getBody();
 
-        return "NORMAL FLOW !!! Marge Details: " + response + " -";
+        return "NORMAL FLOW !!! Delete Details: " + response + " -";
     }
 
     // implement a fallback method
-    public String getMargeProducts_Fallback(){
-        return "Fallback response:: No marge details available";
+    public String deleteProduct_Fallback(Integer id){
+        return "Fallback response:: No delete details available for " + id;
     }
 
     //this is a bean

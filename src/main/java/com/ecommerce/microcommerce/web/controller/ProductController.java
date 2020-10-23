@@ -17,7 +17,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -32,6 +34,7 @@ public class ProductController {
         add(new Product(3, "Table de Ping Pong", 750, 350));
     }};
 
+    //PARTIE 0
     //Récupérer la liste des produits
     @RequestMapping(value = "/Produits", method = RequestMethod.GET)
     public List<Product> listeProduits(){
@@ -60,6 +63,8 @@ public class ProductController {
     }
 
     //ajouter un produit
+
+    //TO DO
 
     /*@PostMapping(value = "/Produits")
     public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
@@ -95,6 +100,17 @@ public class ProductController {
                 produit.setPrixAchat(product.getPrixAchat());
             }
         }
+    }
+
+    @GetMapping(value="/AdminProduits")
+    public Map<String,Integer> calculerMargeProduit(){
+        int marge = 0;
+        Map<String,Integer> responses = new HashMap<>();
+        for (Product product : products){
+            marge = product.getPrix() - product.getPrixAchat();
+            responses.put("id="+product.getId()+", nom="+product.getNom()+", prix="+product.getPrix(), marge);
+        }
+        return responses;
     }
 
     //Pour les tests

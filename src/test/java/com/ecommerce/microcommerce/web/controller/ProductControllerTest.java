@@ -40,13 +40,14 @@ class ProductControllerTest {
     @Test
     void testAfficherUnProduit() {
         Product result = productController.afficherUnProduit(0);
-        Assertions.assertEquals(new Product(0, null, 0, 0), result);
+        Assertions.assertEquals(new Product(0, "nom", 0, 0), result);
     }
 
     @Test
     void testAjouterProduit() throws ProduitGratuitException {
-        ResponseEntity<Void> result = productController.ajouterProduit(new Product(0, null, 0, 0));
-        Assertions.assertEquals(null, result);
+        ResponseEntity<Void> result = productController.ajouterProduit(new Product(0, "nom", 10, 0));
+        Assertions.assertTrue(result.getStatusCodeValue() >= 200);
+        Assertions.assertTrue( result.getStatusCodeValue() < 300);
     }
 
     @Test
@@ -62,6 +63,7 @@ class ProductControllerTest {
     @Test
     void testCalculerMargeProduit() {
         Map<String, Integer> result = productController.calculerMargeProduit();
+
         Assertions.assertEquals(new HashMap<String, Integer>() {{
             put("String", Integer.valueOf(0));
         }}, result);
@@ -72,6 +74,7 @@ class ProductControllerTest {
         when(productDao.findAllByOrderByNomAsc()).thenReturn(Arrays.<Product>asList(new Product(0, "nom", 0, 0)));
 
         List<Product> result = productController.trierProduitsParOrdreAlphabetique();
+
         Assertions.assertEquals(Arrays.<Product>asList(new Product(0, "nom", 0, 0)), result);
     }
 

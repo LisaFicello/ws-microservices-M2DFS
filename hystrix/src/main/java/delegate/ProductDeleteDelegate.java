@@ -17,7 +17,7 @@ public class ProductDeleteDelegate {
     public String deleteProduct(Integer id){
         //se mettre au début de la ligne puis cms+option+V choisir ce qu'on veut
         String response = restTemplate.exchange("http://localhost:9090/deleteProduits/{id}",
-                HttpMethod.GET,
+                HttpMethod.DELETE,
                 null,
                 new ParameterizedTypeReference<String>() {
                 }, id).getBody();

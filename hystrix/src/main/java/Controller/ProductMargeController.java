@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProductMargeController {
     @Autowired
-    ProductMargeDelegate pgbid;
+    ProductMargeDelegate pmd;
     @GetMapping("/getMargeDetails/")
     public String getMarge(){
-        return pgbid.getMargeProducts();
+        return pmd.getMargeProducts();
     }
 }

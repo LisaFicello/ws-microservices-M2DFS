@@ -82,12 +82,14 @@ public class ProductController {
     }
 
     // supprimer un produits
+    //j'ai utilisé la bdd static pour supprimer l'élément en fonction de l'id passé en paramètres
     @DeleteMapping(value = "/deleteProduits/{id}")
     public void supprimerProduit(@PathVariable int id) {
         products.removeIf(product -> product.getId() == id);
     }
 
     // Mettre à jour un produit
+    //J'ai utilisé la bdd static pour mettre à jour le produit à partir de l'id
     @PutMapping(value = "/updateProduit/{id}")
     public void updateProduit(@PathVariable int id, @RequestBody Product product) {
         for (Product produit : products){
@@ -100,6 +102,7 @@ public class ProductController {
         }
     }
 
+    //J'ai utilisé la bdd static pour calculer la marge et retourner une nouvelle liste
     @GetMapping(value="/AdminProduits")
     public Map<String,Integer> calculerMargeProduit(){
         int marge = 0;
@@ -111,6 +114,7 @@ public class ProductController {
         return responses;
     }
 
+    //J'ai utilisé le DAO (donc voir aussi dans dao > ProductDAO) en créant une fonction qui permet le tri par ordre alphabétique
     @GetMapping(value="/sortProducts")
     public List<Product> trierProduitsParOrdreAlphabetique(){
         /*List<Product> sortedList = new ArrayList<Product>();

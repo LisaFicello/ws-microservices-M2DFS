@@ -16,10 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @RestController
@@ -113,12 +110,20 @@ public class ProductController {
         return responses;
     }
 
+    @GetMapping(value="/sortProducts")
+    public List<Product> trierProduitsParOrdreAlphabetique(){
+        /*List<Product> sortedList = new ArrayList<Product>();
+        sortedList = Collections.sort(products);
+        return sortedList;*/
+        return productDao.findAllByOrderByNomAsc();
+    }
+
+
     //Pour les tests
     @GetMapping(value = "test/produits/{prix}")
     public List<Product>  testeDeRequetes(@PathVariable int prix) {
         return productDao.chercherUnProduitCher(400);
     }
-
 
 
 }

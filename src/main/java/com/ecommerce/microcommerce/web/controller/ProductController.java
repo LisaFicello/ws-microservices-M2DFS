@@ -68,23 +68,25 @@ public class ProductController {
 
     @ApiOperation(value = "ajoute un produit à la bdd", response = Iterable.class, tags ="ajouterProduit")
     //ajouter un produit
-    @PostMapping(value = "/Produits")
-    public ResponseEntity<Void>ajouterProduit(@Valid @RequestBody Product product) throws ProduitGratuitException {
-        Product productAdded =  productDao.save(product);
-        if (productAdded.getPrix() > 0){
-            if (productAdded == null)
-                return ResponseEntity.noContent().build();
+    @PostMapping(value = "/Produit")
+    public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) throws ProduitGratuitException {
 
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(productAdded.getId())
-                    .toUri();
-            return ResponseEntity.created(location).build();
+        if(product.getPrix() <= 0) {
+            throw new ProduitGratuitException("le prix de vente ne peut pas être égal à 0");
         }
-        else{
-            throw new ProduitGratuitException("On ne vend pas des produits gratuit");
-        }
+
+        Product productAdded =  productDao.save(product);
+
+        if (productAdded == null)
+            return ResponseEntity.noContent().build();
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(productAdded.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @ApiOperation(value = "supprime un produit de la bdd", response = Iterable.class, tags ="supprimerProduit")
@@ -99,7 +101,10 @@ public class ProductController {
     // Mettre à jour un produit
     //J'ai utilisé la bdd static pour mettre à jour le produit à partir de l'id
     @PutMapping(value = "/updateProduit/{id}")
-    public void updateProduit(@PathVariable int id, @RequestBody Product product) {
+    public void updateProduit(@PathVariable int id, @RequestBody Product product) throws ProduitGratuitException{
+        if(product.getPrix()<=0) {
+            throw new ProduitGratuitException("le prix de vente ne peut pas être égal à 0");
+        }
         for (Product produit : products){
             if (produit.getId() == id){
                 produit.setId(product.getId());

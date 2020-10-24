@@ -3,16 +3,12 @@ package com.ecommerce.microcommerce.web.controller;
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
 import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
-import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,12 +16,18 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.*;
 
-
+@Api(value="Swagger2DemoRestController")
 @RestController
 public class ProductController {
-
     @Autowired
     private ProductDao productDao;
+
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "okz"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not found")
+    })
 
     private static List<Product> products = new ArrayList<Product>(){{
         add(new Product(1, "Ordinateur Portable", 350, 230));
@@ -33,6 +35,11 @@ public class ProductController {
         add(new Product(3, "Table de Ping Pong", 750, 350));
     }};
 
+    public ProductController(ProductDao productDao) {
+        this.productDao = productDao;
+    }
+
+    @ApiOperation(value = "récupère la liste des produits dans la bdd", response = Iterable.class, tags ="listeProduits")
     //PARTIE 0
     //Récupérer la liste des produits
     @RequestMapping(value = "/Produits", method = RequestMethod.GET)
@@ -48,7 +55,7 @@ public class ProductController {
         return produitsFiltres;
     }*/
 
-
+    @ApiOperation(value = "récupère un produit en fonction de son id", response = Iterable.class, tags ="afficherUnProduit")
     //Récupérer un produit par son Id
     @RequestMapping(value = "/Produits/{id}", method = RequestMethod.GET)
     public Product afficherUnProduit(@PathVariable int id) {
@@ -61,6 +68,7 @@ public class ProductController {
         return produit;
     }
 
+    @ApiOperation(value = "ajoute un produit à la bdd", response = Iterable.class, tags ="ajouterProduit")
     //ajouter un produit
     @PostMapping(value = "/Produits")
     public ResponseEntity<Void>ajouterProduit(@Valid @RequestBody Product product) throws ProduitGratuitException {
@@ -81,6 +89,7 @@ public class ProductController {
         }
     }
 
+    @ApiOperation(value = "supprime un produit de la bdd", response = Iterable.class, tags ="supprimerProduit")
     // supprimer un produits
     //j'ai utilisé la bdd static pour supprimer l'élément en fonction de l'id passé en paramètres
     @DeleteMapping(value = "/deleteProduits/{id}")
@@ -88,6 +97,7 @@ public class ProductController {
         products.removeIf(product -> product.getId() == id);
     }
 
+    @ApiOperation(value = "mets à jour un produit", response = Iterable.class, tags ="updateProduit")
     // Mettre à jour un produit
     //J'ai utilisé la bdd static pour mettre à jour le produit à partir de l'id
     @PutMapping(value = "/updateProduit/{id}")
@@ -102,6 +112,7 @@ public class ProductController {
         }
     }
 
+    @ApiOperation(value = "calcul de la marge réalisée sur un produit en fonction de son prix d'achat et de revente", response = Iterable.class, tags ="calculerMargeProduit")
     //J'ai utilisé la bdd static pour calculer la marge et retourner une nouvelle liste
     @GetMapping(value="/AdminProduits")
     public Map<String,Integer> calculerMargeProduit(){
@@ -114,6 +125,7 @@ public class ProductController {
         return responses;
     }
 
+    @ApiOperation(value = "tri dans l'ordre alphabétique de tous les produits", response = Iterable.class, tags ="trierProduitsParOrdreAlphabetique")
     //J'ai utilisé le DAO (donc voir aussi dans dao > ProductDAO) en créant une fonction qui permet le tri par ordre alphabétique
     @GetMapping(value="/sortProducts")
     public List<Product> trierProduitsParOrdreAlphabetique(){

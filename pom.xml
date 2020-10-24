@@ -9,7 +9,9 @@
     <modules>
         <module>hystrix</module>
 		<module>Eureka</module>
-	</modules>
+        <module>eureka-server</module>
+        <module>eureka</module>
+    </modules>
     <packaging>pom</packaging>
 
 	<name>microcommerce</name>

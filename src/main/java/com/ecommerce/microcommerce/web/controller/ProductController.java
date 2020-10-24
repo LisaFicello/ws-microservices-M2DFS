@@ -22,22 +22,20 @@ public class ProductController {
     @Autowired
     private ProductDao productDao;
 
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "okz"),
-            @ApiResponse(code = 401, message = "Unauthorized"),
-            @ApiResponse(code = 403, message = "Forbidden"),
-            @ApiResponse(code = 404, message = "Not found")
-    })
-
     private static List<Product> products = new ArrayList<Product>(){{
         add(new Product(1, "Ordinateur Portable", 350, 230));
         add(new Product(2, "Aspirateur Robot", 500, 300));
         add(new Product(3, "Table de Ping Pong", 750, 350));
     }};
 
-    public ProductController(ProductDao productDao) {
-        this.productDao = productDao;
-    }
+
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "ok"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 403, message = "Forbidden"),
+            @ApiResponse(code = 404, message = "Not found")
+    })
+
 
     @ApiOperation(value = "récupère la liste des produits dans la bdd", response = Iterable.class, tags ="listeProduits")
     //PARTIE 0
